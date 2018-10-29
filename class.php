@@ -1,45 +1,65 @@
 <?php
-class Kalkulator{
-    private $conn;
+    class mahastudent{
+        private $conn;
 
-    public function Kalkulator(){
-        $servername = "localhost";
-        $username   = "admin";
-        $password   = "1234";
-        $db         = "WebDasar";       
-        $this->conn = mysqli_connect($servername, $username, 
-                           $password, $db);                        
-    }    
+        public function __construct(){
+            $server= "localhost";
+            $user  = "root";
+            $pass  = "";
+            $db    = "webdas";
+            $this->conn = mysqli_connect($server,$user,$pass,$db);
+        }
+        public function tambahdata(){
+            $nama = $_POST['nama'];
+            $nim = $_POST['nim'];
+            $tanggal = $_POST['tanggal'];
+            $sql = "INSERT INTO mahasiswa (nama,nim,tgl_lahir) VALUES ('$nama','$nim','$tanggal')";
+            if (mysqli_query($this->conn,$sql)) {
+                ?>
+                <script>
+                    alert("Data berhasil diinput");
+                    location="index.php";
+                </script>
+                <?php
+            }
+        }
+        public function hapusdata(){
+            $nim = $_GET['hapus'];
+            $sql = "DELETE FROM mahasiswa WHERE nim=$nim";
+            mysqli_query($this->conn,$sql);
+        }
+        public function lihatdata(){
+            $sql = "SELECT * FROM mahasiswa";
+            return mysqli_query($this->conn,$sql);
+        }
+        public function datamhs($nim){
+            $sql = "SELECT * FROM mahasiswa WHERE nim='$nim'";
+            return mysqli_query($this->conn,$sql);
+        }
 
-    public function tambah(){
-        $angka1 = $_POST['input1'];
-        $angka2 = $_POST['input2'];
-        $sql    = "INSERT INTO siswa(nama, nim) 
-                    VALUES ('$angka1','$angka2')";
-        mysqli_query($this->conn, $sql);        
-    }    
-    public function kurang(){        
-        $angka1 = $_POST['input1'];
-        $angka2 = $_POST['input2'];
-        $sql    = "DELETE FROM siswa WHERE nim=$angka2";        
-        mysqli_query($this->conn, $sql);
+        public function editdata(){
+            $nama = $_POST['nama'];
+            $nim = $_POST['nim'];
+            $tanggal = $_POST ['tanggal'];
+            $sql = "UPDATE mahasiswa SET nama='$nama',tgl_lahir='$tanggal' WHERE nim='$nim'";
+            mysqli_query($this->conn,$sql);         
+        }
     }
-    public function bagi(){
-        $sql    = "SELECT * FROM siswa";        
-        return mysqli_query($this->conn, $sql);
-
+    $mahastudent = new mahastudent();
+    if (isset($_GET['tambah_data'])) {
+        $mahastudent -> tambahdata();
     }
-}
-$operasi = $_POST["operasi"];
-$kalkulator = new Kalkulator();
-if($operasi == "+")
-    $kalkulator->tambah();
-if($operasi == "-")
-    $kalkulator->kurang();
-if($operasi == "/"){
-    $result = $kalkulator->bagi();
-    require_once("data.php");
-}
-    
-
+    if (isset($_GET['hapus'])) {
+        $mahastudent->hapusdata();
+        header("location:data.php");
+    }
+    if (isset($_GET['edit_data'])) {
+        $mahastudent->editdata();
+        ?>
+            <script>
+                alert("Data berhasil diedit");
+                location="data.php";
+            </script>
+        <?php
+    }
 ?>
