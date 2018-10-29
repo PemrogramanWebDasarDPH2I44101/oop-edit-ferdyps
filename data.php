@@ -1,30 +1,31 @@
-<table border=1>
-    <thead>
-        <th>Nama</th>
-        <th>Nim</th>
-        <th>Tanggal Lahir</th>
-        <th>Aksi</th>
-    </thead>
-    <tbody>
-<?php
-if (mysqli_num_rows($result) > 0) {
-    while($row = mysqli_fetch_assoc($result)) {
-        $nim = $row['nim'];
-        echo "<tr>";
-        echo "<td>" . $row["nama"]. "</td>"; 
-        echo "<td>" . $row["nim"]. "</td>";
-        echo "<td>" . $row["tgl_lahir"]. "</td>";
-        echo "<td>
-            <a href='form_edit.php?nim=$nim'>Edit</a> | 
-            <a href='delete.php?nim=$nim'>Hapus</a> | 
-            
-            </td>";
-        echo "</tr>";
-    }
-} else {
-    echo "0 results";
-}
-mysqli_close($conn);
-?> 
-    </tbody>
-</table>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Page Title</title>
+</head>
+<body>
+    <table border=1>
+        <tr>
+            <th>NAMA</th>
+            <th>NIM</th>
+            <th>TANGGAL LAHIR</th>
+            <th>AKSI</th>
+        </tr>
+        <?php
+            require("class.php");
+            $result = $mahastudent -> lihatdata();
+            while($row = mysqli_fetch_assoc($result)){
+            ?>
+                <tr>
+                    <td><?php echo $row['nama'] ?></td>
+                    <td><?php echo $row['nim'] ?></td>
+                    <td><?php echo $row['tgl_lahir'] ?></td>
+                    <td><a href="class.php?hapus=<?php echo $row['nim']; ?>">Hapus</a> | <a href="edit.php?edit=<?php echo $row['nim']?>">Edit</a></td>
+                </tr>
+            <?php
+            }
+        ?>
+    </table>
+    <td><a href="index.php">Tambah data</a>
+</body>
+</html>
